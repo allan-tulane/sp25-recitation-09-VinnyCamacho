@@ -10,6 +10,6 @@ Place all written answers from `recitation-09.md` here for easier grading.
 
 
 
-- **2)**
+- **2)** Worst case work is O(|E|log|V|)
 
-- **4)**
+- **4)** 
