@@ -12,32 +12,29 @@ def prim(graph):
     Each tree is a set of (weight, node1, node2) tuples.    
     """
     def prim_helper(visited, frontier, tree):
-        if len(frontier) == 0:
-            return tree
-        else:
+        while frontier:
             weight, node, parent = heappop(frontier)
-            if node in visited:
-                return prim_helper(visited, frontier, tree)
-            else:
-                print('visiting', node)
-                # record this edge in the tree
-                tree.add((weight, node, parent))
+            if node not in visited:
+                # record this edge in the tree (except for the initial 0-weight edge)
+                if weight != 0:
+                    tree.add((weight, parent, node))
                 visited.add(node)
                 for neighbor, w in graph[node]:
-                    heappush(frontier, (w, neighbor, node))    
-                    # compare with dijkstra:
-                    # heappush(frontier, (distance + weight, neighbor))                
-
-                return prim_helper(visited, frontier, tree)
-        
-    # pick first node as source arbitrarily
-    source = list(graph.keys())[0]
-    frontier = []
-    heappush(frontier, (0, source, source))
-    visited = set()  # store the visited nodes (don't need distance anymore)
-    tree = set()
-    prim_helper(visited, frontier, tree)
-    return tree
+                    if neighbor not in visited:
+                        heappush(frontier, (w, neighbor, node))
+        return tree
+    
+    visited = set()
+    trees = []
+    
+    for node in graph:
+        if node not in visited:
+            frontier = []
+            heappush(frontier, (0, node, node))
+            tree = prim_helper(visited, frontier, set())
+            trees.append(tree)
+    
+    return trees
 
 def test_prim():    
     graph = {
