@@ -69,17 +69,26 @@ def mst_from_points(points):
     """
     Return the minimum spanning tree for a list of points, using euclidean distance 
     as the edge weight between each pair of points.
-    See test_mst_from_points.
-
-    Params:
-      points... a list of tuples (city_name, x-coord, y-coord)
-
-    Returns:
-      a list of edges of the form (weight, node1, node2) indicating the minimum spanning
-      tree connecting the cities in the input.
     """
-    ###TODO
-    pass
+    if not points:
+        return []
+    
+    # Build the graph (adjacency list representation)
+    graph = defaultdict(list)
+    n = len(points)
+    
+    for i in range(n):
+        for j in range(i+1, n):
+            city1, x1, y1 = points[i]
+            city2, x2, y2 = points[j]
+            distance = euclidean_distance(points[i], points[j])
+            graph[city1].append((city2, distance))
+            graph[city2].append((city1, distance))
+    
+    # Use Prim's algorithm on the fully connected graph
+    # Since the graph is connected (by construction), we'll get one MST
+    mst = prim(graph)
+    return list(mst[0]) if mst else []
 
 def euclidean_distance(p1, p2):
     return sqrt((p1[1] - p2[1])**2 + (p1[2] - p2[2])**2)
